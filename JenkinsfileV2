@@ -1,0 +1,18 @@
+pipeline {
+    agent {
+        docker { iamge 'node:17-alpine3.14'}
+    }
+    stages {
+        stage("Build") {
+            steps {
+                sh 'npm install'
+                sh 'npm build'
+            }
+        }
+        stage("Deploy") {
+            steps {
+                echo "This is the first step in the Deploy Stage"
+            }
+        }
+    }
+}
