@@ -4,9 +4,14 @@ pipeline {
         AZURE_STORAGE_ACCOUNT='ikstorageexample'
     }
     stages {
-        stage("Build") {
+        stage("Checkout Repo") {
             steps {
                 cleanWs()
+                checkout([$class: 'GitSCM', branches: [[name: '*/master']], extensions: [], userRemoteConfigs: [[url: 'https://github.com/diogenes0803/jenkins-example']]])
+            }
+        }
+        stage("Build") {
+            steps {
                 nodejs('node17') {
                     sh 'npm install'
                     sh 'npm run build'
