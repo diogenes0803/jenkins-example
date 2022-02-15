@@ -19,7 +19,7 @@ pipeline {
                       az login --identity
                       # Execute upload to Azure
                       az storage container create --account-name $AZURE_STORAGE_ACCOUNT --name $JOB_NAME --auth-mode login
-                      az storage blob upload --auth-mode login --destination ${JOB_NAME} --source ./${JOB_NAME}${BUILD_NUMBER}.tar.gz --account-name $AZURE_STORAGE_ACCOUNT
+                      az storage blob upload --auth-mode login -n ${JOB_NAME} -f ./${JOB_NAME}${BUILD_NUMBER}.tar.gz -c $AZURE_STORAGE_ACCOUNT
                       # Logout from Azure
                       az logout
                     '''
