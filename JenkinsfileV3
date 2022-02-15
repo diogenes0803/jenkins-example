@@ -1,0 +1,35 @@
+pipeline {
+    agent any
+    environment {
+        AZURE_STORAGE_ACCOUNT='ikstorageexample'
+    }
+    stages {
+        stage("Build") {
+            steps {
+                nodejs('node17') {
+                    sh 'npm install'
+                    sh 'npm run build'
+                    sh 'tar -zcf ${JOB_NAME}${BUILD_NUMBER}.tar.gz ./build/*'
+                }
+            }
+            post {
+                success {
+                    sh '''
+                      # Login to Azure with ServicePrincipal
+                      az login --identity
+                      # Execute upload to Azure
+                      az storage container create --account-name $AZURE_STORAGE_ACCOUNT --name $JOB_NAME --auth-mode login
+                      az storage blob upload-batch --auth-mode login --destination ${JOB_NAME} --source ${JOB_NAME}${BUILD_NUMBER}.tar.gz --account-name $AZURE_STORAGE_ACCOUNT
+                      # Logout from Azure
+                      az logout
+                    '''
+                }
+          }
+        }
+        stage("Deploy") {
+            steps {
+                echo "This is the first step in the Deploy Stage"
+            }
+        }
+    }
+}
