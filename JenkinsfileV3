@@ -6,6 +6,7 @@ pipeline {
     stages {
         stage("Build") {
             steps {
+                cleanWs()
                 nodejs('node17') {
                     sh 'npm install'
                     sh 'npm run build'
