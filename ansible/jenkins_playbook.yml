@@ -33,6 +33,19 @@
         state: started
         name: jenkins
 
+    - name: "add ansible repo"
+      apt_repository:
+        repo: 'ppa:ansible/ansible'
+
+    - name: "apt-get update"
+      apt:
+        update_cache: yes
+        cache_valid_time: 3600
+
+    - name: "install ansible"
+      apt:
+        name: ['software-properties-common', 'ansible']
+
     - name: "install azure-cli pre-req"
       apt:
         name: ['ca-certificates', 'curl', 'apt-transport-https', 'lsb-release', 'gnupg']
@@ -44,7 +57,7 @@
 
     - name: "Add the Azure CLI software repository"
       shell:
-        cmd: "AZ_REPO=$(lsb_release -cs) && echo 'deb [arch=amd64] https://packages.microsoft.com/repos/azure-cli/ $AZ_REPO main' | sudo tee /etc/apt/sources.list.d/azure-cli.list "
+        cmd: "AZ_REPO=$(lsb_release -cs) && echo 'deb [arch=amd64] https://packages.microsoft.com/repos/azure-cli/ $AZ_REPO main' | sudo tee /etc/apt/sources.list.d/azure-cli.list"
 
     - name: "apt-get update"
       apt:
@@ -55,3 +68,20 @@
       apt:
         name: ['azure-cli']
         state: latest
+
+    - name: "Check ssh-key"
+      stat:
+        path: "/home/azureuser/.ssh/id_rsa"
+      register: ssh_exist
+
+    - name: "create and upload public key"
+      become: yes
+      become_method: su
+      become_user: azureuser
+      shell: |
+        ssh-keygen -q -t rsa -N '' -f ~/.ssh/id_rsa
+        az login --identity
+        az storage container create --account-name ikstorageexample --name public-key --auth-mode login
+        az storage blob upload --auth-mode login -c public-key -f ~/.ssh/id_rsa.pub -n id_rsa.pub --account-name ikstorageexample
+        az logout
+      when: not ssh_exist.stat.exists

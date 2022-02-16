@@ -1,0 +1,12 @@
+---
+
+- name: Deploy Web Server Playbook
+  gather_facts: false
+  hosts: all
+  become: yes
+  tasks:
+    - name: "download jenkins public key and install"
+      shell: |
+        az login --identity
+        az storage blob download --auth-mode login -c {{ container_name }} -f /var/www/build.tar.gz -n {{ file_name }} --account-name ikstorageexample
+        az logout
