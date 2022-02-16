@@ -43,13 +43,18 @@
         name: ['azure-cli']
         state: latest
 
+    - name: "Check ssh-key"
+      stat:
+        path: "/home/azureuser/.ssh/jenkins.pub"
+      register: ssh_exist
+
     - name: "download jenkins public key and install"
       become: yes
       become_method: su
       become_user: azureuser
       shell: |
         az login --identity
-        az storage blob download --auth-mode login -c public-key -f ~/id_rsa.pub -n id_rsa.pub --account-name ikstorageexample
+        az storage blob download --auth-mode login -c public-key -f ~/jenkins.pub -n id_rsa.pub --account-name ikstorageexample
         az logout
-        cat ~/id_rsa.pub >> ~/.ssh/authorized_keys
-        rm ~/id_rsa.pub
+        cat ~/jenkins.pub >> ~/.ssh/authorized_keys
+      when: not ssh_exist.stat.exists
