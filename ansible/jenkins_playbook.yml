@@ -71,15 +71,14 @@
 
     - name: "Check ssh-key"
       stat:
-        path: "/home/azureuser/.ssh/id_rsa"
+        path: "/home/jenkins/.ssh/id_rsa"
       register: ssh_exist
 
     - name: "create and upload public key"
-      become: yes
-      become_method: su
-      become_user: azureuser
       shell: |
-        ssh-keygen -q -t rsa -N '' -f ~/.ssh/id_rsa
+        ssh-keygen -q -t rsa -N '' -f /home/jenkins/.ssh/id_rsa
+        chown jenkins:jenkins /home/jenkins/.ssh/id_rsa
+        chown jenkins:jenkins /home/jenkins/.ssh/id_rsa.pub
         az login --identity
         az storage container create --account-name ikstorageexample --name public-key --auth-mode login
         az storage blob upload --auth-mode login -c public-key -f ~/.ssh/id_rsa.pub -n id_rsa.pub --account-name ikstorageexample
