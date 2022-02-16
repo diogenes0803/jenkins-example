@@ -12,7 +12,7 @@
         az storage blob download --auth-mode login -c {{ container_name }} -f /var/www/build.tar.gz -n {{ file_name }} --account-name ikstorageexample
         az logout
 
-    -name: "Wait until the download finish"
+    - name: "Wait until the download finish"
       wait_for:
         path: /var/www/build.tar.gz
 
