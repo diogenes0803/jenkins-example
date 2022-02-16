@@ -76,11 +76,11 @@
 
     - name: "create and upload public key"
       shell: |
-        ssh-keygen -q -t rsa -N '' -f /home/jenkins/.ssh/id_rsa
-        chown jenkins:jenkins /home/jenkins/.ssh/id_rsa
-        chown jenkins:jenkins /home/jenkins/.ssh/id_rsa.pub
+        ssh-keygen -q -t rsa -N '' -f /var/lib/jenkins/.ssh/.ssh/id_rsa
+        chown jenkins:jenkins /var/lib/jenkins/.ssh/id_rsa
+        chown jenkins:jenkins /var/lib/jenkins/.ssh/id_rsa.pub
         az login --identity
         az storage container create --account-name ikstorageexample --name public-key --auth-mode login
-        az storage blob upload --auth-mode login -c public-key -f ~/.ssh/id_rsa.pub -n id_rsa.pub --account-name ikstorageexample
+        az storage blob upload --auth-mode login -c public-key -f /var/lib/jenkins/.ssh/id_rsa.pub -n id_rsa.pub --account-name ikstorageexample
         az logout
       when: not ssh_exist.stat.exists
