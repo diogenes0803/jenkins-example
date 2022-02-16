@@ -11,8 +11,13 @@
         rm -rf /var/www/*
         az storage blob download --auth-mode login -c {{ container_name }} -f /var/www/build.tar.gz -n {{ file_name }} --account-name ikstorageexample
         az logout
-        
-    - name: "install package"
+
+    - name: "unarchive package"
+      unarchive:
+        src: /var/www/build.tar.gz
+        dest: /var/www
+
+    - name: "move unarchived package and delete unnecessary files"
       shell: |
-        tar -xf /var/www/build.tar.gz
         mv /var/www/build /var/www/html
+        rm /var/www/build.tar.gz
