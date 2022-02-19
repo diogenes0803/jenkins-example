@@ -4,10 +4,14 @@
   gather_facts: false
   hosts: all
   become: yes
+  vars:
+    env_variables:
+      AZ_REPO: "bionic"
   tasks:
     - name: "Add the Azure CLI software repository"
+      environment: "{{ env_variables }}"
       shell:
-        cmd: "AZ_REPO=$(lsb_release -cs) && echo 'deb [arch=amd64] https://packages.microsoft.com/repos/azure-cli/ $AZ_REPO main' | sudo tee /etc/apt/sources.list.d/azure-cli.list"
+        cmd: "echo 'deb [arch=amd64] https://packages.microsoft.com/repos/azure-cli/ $AZ_REPO main' | sudo tee /etc/apt/sources.list.d/azure-cli.list"
     
     - name: "apt-key"
       shell:
@@ -18,6 +22,7 @@
         cmd: "sudo sh -c 'echo deb http://pkg.jenkins.io/debian-stable binary/ > /etc/apt/sources.list.d/jenkins.list'"
 
     - name: "add ansible repo"
+      environment: "{{ env_variables }}"
       apt_repository:
         repo: 'ppa:ansible/ansible'
 

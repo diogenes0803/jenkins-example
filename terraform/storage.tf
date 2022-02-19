@@ -13,18 +13,18 @@ resource "azurerm_storage_container" "artifacts" {
     container_access_type = "private"
 }
 
-data "azurerm_role_definition" "reader" {
-  name = "Storage Blob Data Reader"
+data "azurerm_role_definition" "contributor" {
+  name = "Storage Blob Data Contributor"
 }
 
 resource "azurerm_role_assignment" "web_artifact_storage" {
   scope              = azurerm_storage_account.ik.id
-  role_definition_id = "${azurerm_storage_account.ik.id}${data.azurerm_role_definition.reader.id}"
+  role_definition_id = "${azurerm_storage_account.ik.id}${data.azurerm_role_definition.contributor.id}"
   principal_id       = azurerm_linux_virtual_machine.web.identity[0].principal_id
 }
 
 resource "azurerm_role_assignment" "jenkins_artifact_storage" {
   scope              = azurerm_storage_account.ik.id
-  role_definition_id = "${azurerm_storage_account.ik.id}${data.azurerm_role_definition.reader.id}"
+  role_definition_id = "${azurerm_storage_account.ik.id}${data.azurerm_role_definition.contributor.id}"
   principal_id       = azurerm_linux_virtual_machine.jenkins.identity[0].principal_id
 }
