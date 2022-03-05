@@ -12,11 +12,9 @@
 
     - name: "Add the Azure CLI software repository"
       shell:
-        cmd: "echo 'deb [arch=amd64] https://packages.microsoft.com/repos/azure-cli/ $AZ_REPO main' | sudo tee /etc/apt/sources.list.d/azure-cli.list"
+        cmd: "echo 'deb [arch=amd64] https://packages.microsoft.com/repos/azure-cli/ focal main' | sudo tee /etc/apt/sources.list.d/azure-cli.list"
 
     - name: "apt-get update"
-      environment:
-        AZ_REPO: "bionic"
       apt:
         update_cache: yes
         cache_valid_time: 3600
