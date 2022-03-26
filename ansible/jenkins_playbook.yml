@@ -78,4 +78,4 @@
         az storage container create --account-name ikstorageexample --name public-key --auth-mode login
         az storage blob upload --auth-mode login -c public-key -f /var/lib/jenkins/.ssh/id_rsa.pub -n id_rsa.pub --account-name ikstorageexample
         az logout
-      when: not ssh_exist.stat.exists
+      when: ssh_exist.stat.exists == False

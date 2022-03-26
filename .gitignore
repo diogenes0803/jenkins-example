@@ -19,7 +19,9 @@
 .env.production.local
 
 #terraform
-/terraform/.terraform
+/terraform/.terraform/
+/terraform/terraform.tfstate
+/terraform/terraform.tfstate.backup
 
 npm-debug.log*
 yarn-debug.log*
